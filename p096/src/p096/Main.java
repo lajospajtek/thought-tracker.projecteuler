@@ -19,7 +19,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        go3();
+        new ThreadedRunner().go();
     }
 
     public static void go3() throws Exception {
