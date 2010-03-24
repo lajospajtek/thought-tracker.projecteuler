@@ -19,7 +19,29 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        go2();
+        go3();
+    }
+
+    public static void go3() throws Exception {
+        PrintStream sw = new PrintStream(new FileOutputStream("solver_output.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("sudoku17"));
+        int i = 0, solved = 0;
+        String line;
+        while ((line = br.readLine()) != null) {
+            Grid grid = new Grid(line);
+            String pzl = grid.toLine();
+            grid.findAllCandidates();
+            grid.solve();
+            String psol = grid.toLine();
+            System.out.println("Grid: " + i);
+            System.out.println(pzl);
+            System.out.println(psol);
+            sw.println(psol);
+            ++i;
+        }
+        sw.close();
+        //br.close();
+        //System.out.println("Verified: " + solved + " out of " + i);
     }
 
     public static void go2() throws Exception {
