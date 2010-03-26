@@ -13,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,13 +25,14 @@ public class ThreadedRunner {
 
     private String END = "__END__";
     private int cores;
-    private final BlockingQueue<String> solverQueue, printerQueue;
+    private final BlockingQueue<IndexedLine> solverQueue;
+    private final BlockingQueue<IndexedLine> printerQueue;
     private final ExecutorService inputReader, solverService;
 
     public ThreadedRunner() {
         cores = Runtime.getRuntime().availableProcessors();
-        solverQueue = new LinkedBlockingQueue<String>(2 * cores);
-        printerQueue = new LinkedBlockingQueue<String>();
+        solverQueue = new LinkedBlockingQueue<IndexedLine>(2 * cores);
+        printerQueue = new PriorityBlockingQueue<IndexedLine>();
         inputReader = Executors.newSingleThreadExecutor();
         solverService = Executors.newFixedThreadPool(cores);
     }
@@ -43,26 +45,62 @@ public class ThreadedRunner {
 
         PrintStream sw = new PrintStream(new FileOutputStream("solver_output.txt"));
         try {
+            int i = 0;
             while (true) {
-                String line = solverQueue.take();
-                if (line == END) { // object identity, not equality
-                    solverQueue.put(END);
-                    break;
+                IndexedLine il = printerQueue.take();
+                if (il.getIndex() != i) {
+                    printerQueue.put(il);
+                    Thread.sleep(100);
+                    continue;
                 }
+                ++i;
+                String line = il.getLine();
                 sw.println(line);
-                System.out.println(line);
+                System.out.println(il.getIndex() + " : " + line);
             }
         } catch (InterruptedException ignored) {
         }
         sw.close();
     }
 
+    class IndexedLine implements Comparable {
+
+        protected int index;
+        protected String line;
+
+        public IndexedLine(int index, String line) {
+            this.index = index;
+            this.line = line;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getLine() {
+            return line;
+        }
+
+        public void setLine(String line) {
+            this.line = line;
+        }
+        
+        public int compareTo(Object o) {
+            if (!(o instanceof IndexedLine)) {
+                throw new UnsupportedOperationException("IndexedLine instance expected");
+            }
+            IndexedLine il = (IndexedLine)o;
+            return index - il.index;
+        }
+
+    }
+
     class GridReader implements Runnable {
 
-        private BlockingQueue<String> solverQueue;
+        private BlockingQueue<IndexedLine> solverQueue;
         private Thread thread;
 
-        public GridReader(BlockingQueue<String> solverQueue) {
+        public GridReader(BlockingQueue<IndexedLine> solverQueue) {
             this.solverQueue = solverQueue;
         }
 
@@ -75,7 +113,7 @@ public class ThreadedRunner {
                     int i = 0;
                     String line;
                     while ((line = br.readLine()) != null) {
-                        solverQueue.put(line);
+                        solverQueue.put(new IndexedLine(i, line));
                         ++i;
                     }
                     br.close();
@@ -91,11 +129,11 @@ public class ThreadedRunner {
 
     class Solver implements Runnable {
 
-        private BlockingQueue<String> solverQueue;
-        private BlockingQueue<String> printerQueue;
+        private BlockingQueue<IndexedLine> solverQueue;
+        private BlockingQueue<IndexedLine> printerQueue;
         private Thread thread;
 
-        public Solver(BlockingQueue<String> solverQueue, BlockingQueue<String> printerQueue) {
+        public Solver(BlockingQueue<IndexedLine> solverQueue, BlockingQueue<IndexedLine> printerQueue) {
             this.solverQueue = solverQueue;
             this.printerQueue = printerQueue;
         }
@@ -105,9 +143,10 @@ public class ThreadedRunner {
             thread = Thread.currentThread();
             while (!thread.isInterrupted()) {
                 try {
-                    String line = solverQueue.take();
+                    IndexedLine il = solverQueue.take();
+                    String line = il.getLine();
                     if (line == END) { // object identity, not equality
-                        printerQueue.put(END);
+                        printerQueue.put(new IndexedLine(0, END));
                         break;
                     }
                     Grid grid = new Grid(line);
@@ -115,13 +154,13 @@ public class ThreadedRunner {
                     grid.findAllCandidates();
                     grid.solve();
                     String psol = grid.toLine();
-                    printerQueue.put(psol);
+                    il.setLine(psol);
+                    printerQueue.put(il);
                 } catch (InterruptedException ignored) {
                     thread.interrupt();
                     break;
                 }
             }
-
         }
     }
 }
