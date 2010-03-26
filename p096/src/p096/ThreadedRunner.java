@@ -56,7 +56,7 @@ public class ThreadedRunner {
                 ++i;
                 String line = il.getLine();
                 sw.println(line);
-                System.out.println(il.getIndex() + " : " + line);
+                System.out.println(il.getIndex() + " : " + line + " (" + (il.getDuration()/1000000L) + ")");
             }
         } catch (InterruptedException ignored) {
         }
@@ -67,6 +67,7 @@ public class ThreadedRunner {
 
         protected int index;
         protected String line;
+        protected long duration;
 
         public IndexedLine(int index, String line) {
             this.index = index;
@@ -85,6 +86,14 @@ public class ThreadedRunner {
             this.line = line;
         }
         
+        public void setduration(long duration) {
+            this.duration = duration;
+        }
+        
+        public long getDuration() {
+            return duration;
+        }
+
         public int compareTo(Object o) {
             if (!(o instanceof IndexedLine)) {
                 throw new UnsupportedOperationException("IndexedLine instance expected");
@@ -151,8 +160,10 @@ public class ThreadedRunner {
                     }
                     Grid grid = new Grid(line);
                     String pzl = grid.toLine();
+                    long start = System.nanoTime();
                     grid.findAllCandidates();
                     grid.solve();
+                    il.setduration(System.nanoTime() - start);
                     String psol = grid.toLine();
                     il.setLine(psol);
                     printerQueue.put(il);

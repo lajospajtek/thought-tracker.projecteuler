@@ -19,7 +19,21 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
+        //go4();
         new ThreadedRunner().go();
+    }
+
+    public static void go4() throws Exception {
+        String pzl;
+        pzl = "000000041600000000000800000500600200040000070000300000000071600002000300070040000";
+        pzl = "000000041600300000000020000040100080000506000700000000300000500000070300010004000";
+        Grid grid = new Grid(pzl);
+        grid.findAllCandidates();
+        System.out.println(grid.toString2());
+        grid.solve();
+        String psol = grid.toLine();
+        System.out.println(pzl);
+        System.out.println(psol);
     }
 
     public static void go3() throws Exception {
