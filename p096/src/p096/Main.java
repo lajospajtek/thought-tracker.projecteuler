@@ -25,10 +25,12 @@ public class Main {
 
     public static void go5() throws Exception {
         PrintStream sw = new PrintStream(new FileOutputStream("solver_output.txt"));
-        BufferedReader br = new BufferedReader(new FileReader("top95"));
+        BufferedReader br = new BufferedReader(new FileReader("top10.txt"));
+        //BufferedReader br = new BufferedReader(new FileReader("top95"));
         int i = 0, solved = 0;
         String line;
         while ((line = br.readLine()) != null) {
+            if (line.trim().length() == 0) continue;
             Grid grid = new Grid(line);
             String pzl = grid.toLine();
             grid.findAllCandidates();
@@ -37,6 +39,7 @@ public class Main {
             System.out.println("Grid: " + i);
             System.out.println(pzl);
             System.out.println(psol);
+            System.out.println(grid.toGid());
             sw.println(psol);
             ++i;
         }

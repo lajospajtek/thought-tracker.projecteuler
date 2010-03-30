@@ -85,11 +85,11 @@ public class ThreadedRunner {
         public void setLine(String line) {
             this.line = line;
         }
-        
+       
         public void setduration(long duration) {
             this.duration = duration;
         }
-        
+       
         public long getDuration() {
             return duration;
         }
