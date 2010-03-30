@@ -19,7 +19,9 @@ public class Grid {
         name = "Unnamed";
         for (int i = 0; i < SIZ; ++i) {
             for (int j = 0; j < SIZ; ++j) {
-                grid[i][j] = new Cell(line.charAt(i * SIZ + j));
+                char c = line.charAt(i * SIZ + j);
+                if (!Character.isDigit(c)) c = '0';
+                grid[i][j] = new Cell(c);
             }
         }
     }
