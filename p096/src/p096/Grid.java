@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package p096;
 
 /**
@@ -20,7 +16,9 @@ public class Grid {
         for (int i = 0; i < SIZ; ++i) {
             for (int j = 0; j < SIZ; ++j) {
                 char c = line.charAt(i * SIZ + j);
-                if (!Character.isDigit(c)) c = '0';
+                if (!Character.isDigit(c)) {
+                    c = '0';
+                }
                 grid[i][j] = new Cell(c);
             }
         }
@@ -92,7 +90,7 @@ public class Grid {
                 if (grid[i][j].getDigit() != '0') {
                     continue;
                 }
-                int cm = grid[i][j].getCandidates().size();
+                int cm = grid[i][j].candidates();
                 if (cm < 0) {
                     System.exit(1);
                 }
@@ -120,12 +118,29 @@ public class Grid {
                 //if (fixed == SIZ*SIZ) return true;
                 boolean ok = true;
                 for (int ii = 0; ii < SIZ; ++ii) {
-                    if (ii == i) {
-                        continue;
-                    }
+                    if (ii == i) continue;
                     ok &= (cd != grid[ii][j].getDigit());
                 }
-                //for (int ii = i+1; ii < SIZ; ++ii) {
+                for (int jj = 0; ok && jj < SIZ; ++jj) {
+                    if (jj == j) {
+                        continue;
+                    }
+                    ok &= (cd != grid[i][jj].getDigit());
+                }
+                // integrity check for the 3x3 sub-grid
+                int bi = (i / 3) * 3;
+                int bj = (j / 3) * 3;
+                for (int ii = 0; ok && ii < 3; ++ii) {
+                    if (i == bi + ii) continue;
+                    for (int jj = 0; jj < 3; ++jj) {
+                        if (j == bj + jj) {
+                            continue;
+                        }
+                        Cell cc = grid[bi + ii][bj + jj];
+                        ok &= (cd != cc.getDigit());
+                    }
+                }
+
                 for (int ii = 0; ok && ii < SIZ; ++ii) {
                     Cell cc = grid[ii][j];
 //                    System.out.println("i: " + ii + ", j: " + j + ", ch:" + cc.getDigit());
@@ -134,32 +149,12 @@ public class Grid {
                     }
                 }
                 for (int jj = 0; ok && jj < SIZ; ++jj) {
-                    if (jj == j) {
-                        continue;
-                    }
-                    ok &= (cd != grid[i][jj].getDigit());
-                }
-                //for (int jj = j+1; jj < SIZ; ++jj) {
-                for (int jj = 0; ok && jj < SIZ; ++jj) {
                     Cell cc = grid[i][jj];
                     //System.out.println("i: " + i + ", j: " + jj + ", ch:" + cc.getDigit());
                     if (cc.getDigit() == '0') {
                         ok &= cc.tryRemoveCandidate(cd);
                     }
                 }
-                // integrity check for the 3x3 sub-grid
-                int bi = (i / 3) * 3;
-                int bj = (j / 3) * 3;
-                for (int ii = 0; ok && ii < 3; ++ii) {
-                    if (i == bi+ii) continue;
-                    for (int jj = 0; jj < 3; ++jj) {
-                        if (j == bj+jj) continue;
-                        Cell cc = grid[bi + ii][bj + jj];
-                        ok &= (cd != cc.getDigit());
-                    }
-                }
-
-
                 for (int ii = 0; ok && ii < 3; ++ii) {
                     for (int jj = 0; jj < 3; ++jj) {
                         Cell cc = grid[bi + ii][bj + jj];
@@ -173,7 +168,7 @@ public class Grid {
                 // TODO: tune this: is fixed needed at all?
                 if (ok) {
                     if (fixed == SIZ * SIZ) {
-                        //System.out.print("\n" + toString2());
+                        System.out.print("fixed reached\n"); // + toString2());
                         return true;
                     }
                     if (solve()) {
@@ -221,7 +216,7 @@ public class Grid {
     }
 
     public String toLine() {
-        StringBuilder sb = new StringBuilder(SIZ*SIZ);
+        StringBuilder sb = new StringBuilder(SIZ * SIZ);
         for (int i = 0; i < SIZ; ++i) {
             for (int j = 0; j < SIZ; ++j) {
                 sb.append(grid[i][j].getDigit());
@@ -229,7 +224,6 @@ public class Grid {
         }
         return sb.toString();
     }
-
 
     @Override
     public String toString() {
@@ -262,11 +256,15 @@ public class Grid {
     }
 
     public String toGid() {
-        StringBuilder sb = new StringBuilder(SIZ*(4+SIZ));
+        StringBuilder sb = new StringBuilder(SIZ * (4 + SIZ));
         for (int i = 0; i < SIZ; ++i) {
-            if (i%3==0) sb.append("------+------+------\n");
-            for (int j = 0; j<SIZ; ++j) {
-                if (j!=0 && j%3==0) sb.append('|');
+            if (i != 0 && i % 3 == 0) {
+                sb.append("------+------+------\n");
+            }
+            for (int j = 0; j < SIZ; ++j) {
+                if (j != 0 && j % 3 == 0) {
+                    sb.append('|');
+                }
                 char c = grid[i][j].getDigit();
                 sb.append(c).append(' ');
             }
