@@ -28,21 +28,21 @@
 
 from math import sqrt, log
 
-lim = 100000000
+lim = 1000000
 
-primes=[2,3]
-i = 3
-#slim=int(sqrt(lim))+1
-slim=lim
-#for i in range(5,lim,2):
-while i < slim:
-  i += 2
-  l = int(sqrt(i))
-  for d in primes[1:l]:
-    if i % d == 0: break
-  else: 
-    primes.append(i)
-  if i%10000 == 1 : print i
+#primes=[2,3]
+#i = 3
+##slim=int(sqrt(lim))+1
+#slim=lim
+##for i in range(5,lim,2):
+#while i < slim:
+#  i += 2
+#  l = int(sqrt(i))
+#  for d in primes[1:l]:
+#    if i % d == 0: break
+#  else: 
+#    primes.append(i)
+#  if i%10000 == 1 : print i
 
 #print primes[999]
 
@@ -71,8 +71,34 @@ def is_powerful(n):
   if divs == []: divs = [(n,1)]
   return divs
 
+def is_powerful2(n):
+  divs = []
+  q = n/2 #int(sqrt(n))
+#  print "n:", n, "q:", q
+  d = 2
+  dd = 1
+  e = 0
+  while d<=q:
+    dv, rm = divmod(n,d)
+    if rm == 0:
+      n = dv
+      e += 1
+    else:
+      if e == 1:
+#        print d, e, "breaking"
+        divs = False
+        break
+      elif e > 1:
+#        print d, e
+        divs.append((d,e))
+      e = 0
+      d += dd
+      dd = 2
+  if divs == []: divs = [(n,1)]
+  return divs
+
 def is_achilles(n):
-  divs = is_powerful(n)
+  divs = is_powerful2(n)
   rc = False
   if divs != False: 
     rc = divs
@@ -97,9 +123,11 @@ def totient(n, divs):
     rc = rc * (d[0]-1) / d[0]
   return rc
   
-
-#divs = is_achilles(864)
-#print totient(864, divs)
+#v = 864 
+#v = 999500
+#divs = is_achilles(v)
+#print v, divs
+#print totient(v, divs)
 #exit()
 
 ctr = 0
@@ -107,13 +135,13 @@ alist = []
 for n in range(5,lim):
   divs = is_achilles(n)
   if divs == False: continue
-  #alist.append(n)
+  alist.append(n)
   t =  totient(n, divs)
-  tdivs = is_achilles(t)
-  if tdivs == False: continue
-  #if t in alist: 
-  ctr += 1
-  #print ctr, ":", n, divs, " - ", t
-  print ctr, ":", n, divs, " - ", t, tdivs
+  #tdivs = is_achilles(t)
+  #if tdivs == False: continue
+  if t in alist: 
+    ctr += 1
+    print ctr, ":", n, divs, " - ", t
+  #print ctr, ":", n, divs, " - ", t, tdivs
   
 #print alist
