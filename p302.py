@@ -28,7 +28,7 @@
 
 from math import sqrt, log
 
-lim = 1000000
+lim = 100000
 
 #primes=[2,3]
 #i = 3
