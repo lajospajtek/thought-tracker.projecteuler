@@ -31,18 +31,19 @@ from math import sqrt, log
 from fractions import gcd
 from itertools import combinations
 
-lim = 10000
+lim = 100000000
+lim = int(1e5)
 
 primes=[2,3]
 slim=int(sqrt(lim))+1
-#slim=int(pow(lim, 1/3)+1)
+slim=int(pow(lim, 1.0/3.0)*1.2)
 for i in range(5,slim,2):
   l = int(sqrt(i))
   for d in primes[1:l]:
     if i % d == 0: break
   else: 
     primes.append(i)
-  if i%10000 == 1 : print i
+  if i%10000 == 1 : print i-1
 
 def is_achilles(n,exps):
   # by construction is already powerful
@@ -67,16 +68,35 @@ def next_number(divs, exps):
       exps[i] = 2
       i += 1
       if i == ld: return -1
-  
+
 ans = 0
-alim = 8
-for aa in range(2,alim): 
-  for divisors in combinations(primes,aa):
+alim = 80
+an = []
+for aa in range(2,alim):
+  print "aa: ", aa
+  m = primes[aa-1]
+  for p in primes[0:aa]: m *= p*p
+  if m > lim:
+    print "! breaking at", aa
+    break
+  i = 0
+  m = reduce(operator.mul, primes[:aa-1])
+  m *= m
+  r = 1
+  while (m*r*r*r <= lim):
+    r = primes[i+aa]
+    i += 1
+  print "max primes index:", i+aa, "next value:", r, "product:", m*r*r*r
+    
+  for divisors in combinations(primes[:i+aa],aa):
+#    break
     exponents = [1] + (aa-2)*[2] + [3]
-    m = 1
+#    print " >>> ", divisors, exponents
+    m = divisors[0] 
     for p, e in zip(divisors,exponents): m *= p ** e
-    if m > lim: 
-#      print "breakign for: ", divisors, exponents
+    if m > lim: continue
+    if divisors[-1] ** 3 > lim: 
+      print "breakign for: ", divisors, exponents
       break
     while True:
       m = next_number(divisors, exponents)
@@ -105,9 +125,12 @@ for aa in range(2,alim):
             texps.append(e)
         if reduce(operator.and_, map(lambda x: x>1, texps)):
           if is_achilles(tot, texps):
-            print m, divisors, exponents, "tot:", tot, tdivs, texps
             ans += 1
+            print ans, m, divisors, exponents, "tot:", tot, tdivs, texps
+            an.append(m)
 
 print ">> achilles numbers below", lim, ":", ans 
+an.sort()
+print ",".join(map(str,an))
 exit()
 
