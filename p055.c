@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define MAX 10000u
 
-unsigned
-reverse(unsigned u)
+uint64_t
+reverse(uint64_t u)
 {
-  unsigned digits[10];
-  unsigned c = 0;
-  unsigned i = u;
+  uint64_t digits[100];
+  uint64_t c = 0;
+  uint64_t i = u;
   while (i!=0) {
-    unsigned d = i % 10u;
+    uint64_t d = i % 10u;
     i /= 10u;
     digits[c++] = d;
   }
-  unsigned v = 1u;
+  uint64_t v = 1u;
   for (v=0,i=0; i<c; ++i) {
     v *= 10;
     v += digits[i];
@@ -22,12 +23,12 @@ reverse(unsigned u)
   return v;
 }
 
-unsigned
-palindrome2(unsigned u, unsigned r)
+uint64_t
+palindrome2(uint64_t u, uint64_t r)
 {
   while (u!=0 && r!=0) {
-    unsigned d = u % 10;
-    unsigned e = r % 10;
+    uint64_t d = u % 10;
+    uint64_t e = r % 10;
     if (e != d) return 0;
     u /= 10u;
     r /= 10u;
@@ -35,20 +36,20 @@ palindrome2(unsigned u, unsigned r)
   return 1;
 }
 
-unsigned
-palindrome(unsigned u)
+uint64_t
+palindrome(uint64_t u)
 {
-  unsigned digits[10];
-  unsigned c = 0;
-  unsigned i = u;
+  uint64_t digits[100];
+  uint64_t c = 0;
+  uint64_t i = u;
   while (i!=0) {
-    unsigned d = i % 10u;
+    uint64_t d = i % 10u;
     i /= 10u;
     digits[c++] = d;
   }
   int j = c-1;
   i = 0;
-  unsigned v = 1u;
+  uint64_t v = 1u;
   while (i<j) {
     if (digits[i] != digits[j]) {
       v = 0;
@@ -69,20 +70,21 @@ palindrome(unsigned u)
 int
 main (int arcv, char** argv)
 {
-  unsigned* cdd = calloc(sizeof(unsigned), MAX);
+  uint64_t* cdd = calloc(sizeof(uint64_t), MAX);
 
   int i, ctr = 1;
-  for(i=0; i<MAX; ++i) {
+  for(i=1; i<MAX; ++i) {
     if (cdd[i] == 0) {
      /* if (i%10==0) {
         ++cdd[i];
         continue;
       }*/
-      int z, d = i;
+      int z;
+      uint64_t d = i;
       for (z=0; z<50; ++z) {
-        unsigned r = reverse(d);
-        unsigned sum = r+d;
-        unsigned p = palindrome(sum);
+        uint64_t r = reverse(d);
+        uint64_t sum = r+d;
+        uint64_t p = palindrome(sum);
         if (p) break;
         d = sum;
       }
