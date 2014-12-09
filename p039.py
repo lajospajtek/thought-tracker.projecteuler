@@ -10,6 +10,8 @@
 #
 # p - a - b < p/2
 # a + b > p/2
+#
+# ans: 840 (with 7 solutions)
 
 def p039(p):
   i = 0

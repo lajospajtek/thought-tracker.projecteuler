@@ -1,3 +1,6 @@
+#
+#ans: 932718654
+
 def is_pandigital(n):
   l = list(n)
   l.sort()

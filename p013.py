@@ -6,5 +6,5 @@ def read(filename):
         sum += nr
     return str(sum)[0:10]
 
-print read("p013.txt")
+print read("p013.dat")
 

@@ -13,7 +13,7 @@
 # difference is pentagonal and D = |Pk - Pj| is minimised; what is the value 
 # of D?
 #
-# ans: 
+# ans: 5482660
 
 def next_pentagonal():
   n = 0
@@ -35,7 +35,8 @@ for p in pentagonals:
     if (p+q) in pentagonals and d in pentagonals:
       if d < ans: 
         ans = d
-      print p, p, (p-q), (p+q)
+      print p, q, (p-q), (p+q)
+      print "ans:", d
       exit(1)
 print md
 

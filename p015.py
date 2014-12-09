@@ -9,7 +9,7 @@ def move_to(x, y):
 
 #print move_to(0,0)
 
-# expandin the recursion above, we get to the binomial coefficients  or pascal's triangle
+# expanding the recursion above, we get to the binomial coefficients or pascal's triangle
 # we are looking for the "middle term" where n = 20+20 and k = 20
 # see for instance: http://en.wikipedia.org/wiki/Binomial_coefficient
 

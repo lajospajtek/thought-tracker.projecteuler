@@ -1,4 +1,6 @@
 
+# ans: 872187
+
 def palindromic(s):
     if s[-1] == '0': return False
     n = len(s) // 2 +1
