@@ -1,3 +1,6 @@
+#
+# and: 972
+
 import math
 
 max_sum = -1

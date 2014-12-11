@@ -1,3 +1,6 @@
+#
+# ans: 142857
+
 from math import log
 
 x = 0

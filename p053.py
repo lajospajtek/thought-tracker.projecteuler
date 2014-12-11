@@ -1,3 +1,6 @@
+#
+# ans: 4075
+
 f = [1]
 g = 1
 for i in range(1,101):

@@ -1,4 +1,5 @@
-# project euler problem 018
+# project euler problem 067
+# ans: 7273
 
 def read_triangle(filename):
     triangle = []
