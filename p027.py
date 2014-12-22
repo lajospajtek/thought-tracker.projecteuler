@@ -38,7 +38,6 @@ def is_prime(p):
 def main():
     global primes
     primes = read_primes("primes1.txt")
-    print len(primes)
     max_n = max_a = max_b = -1
     for a in xrange(-1000,1001):
         for b in xrange(-999,1001,2):
