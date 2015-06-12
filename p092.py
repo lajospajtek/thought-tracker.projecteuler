@@ -1,4 +1,4 @@
-#/usr/bin/python
+#!/usr/bin/python
 # vim: set fileencoding=UTF-8
 
 # Problem 92
